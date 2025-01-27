@@ -16,16 +16,7 @@ const Home = () => {
     } 
     // else if (location.pathname === '/account') {
     //    return <Account />;
-
-    // } else if (location.pathname.startsWith('/course/')) {
-
-    //    const courseId = location.pathname.split('/')[2];
-    //    return <Course courseId={courseId} savedcourses={savedcoursesid} />;
-
-    // } else if (location.pathname.startsWith('/faculty/')) {
-    //    const faculty = location.pathname.split('/')[2];
-    //    return <Courses faculty={faculty} />;
-    // }
+    // } 
     return null;
  };
 

@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Empty = () => {
+const Dashboard = () => {
     return (
         <div className=''>
-            gi
+            hi
         </div>
     )
 }
 
-export default Empty
+export default Dashboard
