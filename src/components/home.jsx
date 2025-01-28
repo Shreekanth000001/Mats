@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <div className="App md:bg-[#F6F7F9] tracking-wide h-screen">
-      <div className="md:flex md:mx-auto justify-center tracking-wider mb-7 md:mb-0">
+      <div className="md:flex tracking-wider mb-7 md:mb-0">
         <Menu />
         {renderContent()}
       </div>
