@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../index.css";
 import Menu from "./menu";
@@ -7,6 +7,7 @@ import Dashboard from "./dashboard";
 const Home = () => {
   const location = useLocation();
   const [classes, setClasses] = useState([]);
+  const [attendances, setAttendances] = useState([]);
 
   const fetchClasses = () => {
     fetch("http://localhost:3000/")
@@ -14,14 +15,21 @@ const Home = () => {
       .then((data) => setClasses(data))
       .catch((error) => console.error("Error fetching classes:", error));
   }
+  const fetchAttendances = () => {
+    fetch("http://localhost:3000/attendance/getall")
+      .then((response) => response.json())
+      .then((data) => setAttendances(data))
+      .catch((error) => console.error("Error fetching classes:", error));
+  }
 
   useEffect(() => {
     fetchClasses();
+    fetchAttendances();
   }, [location.pathname]);
 
   const renderContent = () => {
     if (location.pathname === "/") {
-      return <Dashboard data={classes} />;
+      return <Dashboard classdata={classes} attendancedata={attendances}/>;
     }
     return null;
   };
