@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import "../index.css";
 import Menu from "./menu";
 import Dashboard from "./dashboard";
+import Class from "./class";
+import Student from "./student";
 
 const Home = () => {
   const location = useLocation();
@@ -31,6 +33,14 @@ const Home = () => {
     if (location.pathname === "/") {
       return <Dashboard classdata={classes} attendancedata={attendances}/>;
     }
+    else if (location.pathname.startsWith('/class/')) {
+      const classid = location.pathname.split('/')[2];
+      return <Class classId={classid} />;
+   }
+    else if (location.pathname.startsWith('/student/')) {
+      const studentid = location.pathname.split('/')[2];
+      return <Student studentId={studentid} />;
+   }
     return null;
   };
 

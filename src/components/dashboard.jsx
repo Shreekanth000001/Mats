@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../index.css";
 import Profilepic from "../assets/profile.png";
+import { Link } from "react-router-dom";
 
 const Dashboard = ({ classdata, attendancedata }) => {
 
@@ -22,7 +23,7 @@ const Dashboard = ({ classdata, attendancedata }) => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {classdata.map((classData) => (
           <div key={classData._id} className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-
+             <Link to={`/class/${classData._id}`}>
             <div >
               <div>{classData.name}</div>
               <div className="mt-4 flex items-end justify-between">
@@ -32,7 +33,7 @@ const Dashboard = ({ classdata, attendancedata }) => {
                 </div>
                 <div>{((getattendance(classData._id) / classData.strength) * 100).toFixed(1)}%</div>
               </div>
-            </div>
+            </div></Link>
           </div>
         ))}
 
