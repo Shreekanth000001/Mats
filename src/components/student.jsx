@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../index.css";
 
-const Class = ({ studentId }) => {
+const Student = ({ studentId }) => {
   const [attendances, setAttendances] = useState([]);
 
   const fetchStudents = () => {
@@ -18,18 +18,17 @@ const Class = ({ studentId }) => {
 
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      <div>Class name : {attendances?.[0]?.classname}</div>
+      <div>Student name : {attendances?.[0]?.name}</div>
+      <span>Subjects: </span>
+      <div className="">
         {attendances.map((attendance) => (
-          <div key={attendance._id} className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div >
-                <div>{attendance.name}</div>
-                <div>{attendance.subject}</div>
-                <div className="mt-4 flex items-end justify-between">
-
-                </div>
-              </div>
-
+          <div key={attendance._id} className="">
+            <div>{attendance.date} </div>
+            <div>{attendance.subject} 
+              <span>Status : {attendance.student.status}</span> </div>
+            <div className="mt-4 flex items-end justify-between">
+            </div>
           </div>
         ))}
 
@@ -37,4 +36,4 @@ const Class = ({ studentId }) => {
   );
 };
 
-export default Class;
+export default Student;

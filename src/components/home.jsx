@@ -41,6 +41,10 @@ const Home = () => {
       const studentid = location.pathname.split('/')[2];
       return <Student studentId={studentid} />;
    }
+    else if (location.pathname.startsWith('/attendance/')) {
+      const classid = location.pathname.split('/')[2];
+      return <Student classId={classid} />;
+   }
     return null;
   };
 
