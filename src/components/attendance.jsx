@@ -44,7 +44,7 @@ const Attendance = ({ classId }) => {
       body: JSON.stringify({
         classId: classId,
         date: new Date(selectedDate).toISOString(),
-        subject: "Sanskrit",
+        subject: "Web Development",
         students: formattedStudents,
       }),
     })
