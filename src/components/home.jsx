@@ -5,6 +5,7 @@ import Menu from "./menu";
 import Dashboard from "./dashboard";
 import Class from "./class";
 import Student from "./student";
+import Attendance from "./attendance";
 
 const Home = () => {
   const location = useLocation();
@@ -43,7 +44,7 @@ const Home = () => {
    }
     else if (location.pathname.startsWith('/attendance/')) {
       const classid = location.pathname.split('/')[2];
-      return <Student classId={classid} />;
+      return <Attendance classId={classid} />;
    }
     return null;
   };
