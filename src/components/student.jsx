@@ -4,8 +4,10 @@ import "../index.css";
 
 const Student = ({ studentId }) => {
   const [attendances, setAttendances] = useState([]);
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  const attendedChartRef = useRef(null);
+  const absentChartRef = useRef(null);
+  const attendedChartInstance = useRef(null);
+  const absentChartInstance = useRef(null);
 
   useEffect(() => {
     fetch(`http://localhost:3000/students/attendance?studentid=${studentId}`)
@@ -16,108 +18,165 @@ const Student = ({ studentId }) => {
 
   useEffect(() => {
     if (!attendances.length) return;
-  
-    const ctx = chartRef.current.getContext("2d");
-  
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
-  
-    // Sort the attendances by date
+
+    // Destroy previous charts before re-rendering
+    if (attendedChartInstance.current) attendedChartInstance.current.destroy();
+    if (absentChartInstance.current) absentChartInstance.current.destroy();
+
     const sortedAttendances = [...attendances].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
     );
-  
-    // Group the attendance records by date
-    const groupedAttendance = sortedAttendances.reduce((acc, curr) => {
-      const date = new Date(curr.date).toLocaleDateString(); // Group by date (formatted)
-      if (!acc[date]) {
-        acc[date] = [];
+
+    // Group attendance records by date and separate attended/absent subjects
+    const groupedAttendance = {};
+    const groupedAbsence = {};
+
+    sortedAttendances.forEach((curr) => {
+      const date = new Date(curr.date).toLocaleDateString();
+
+      if (curr.student.status === "present") {
+        if (!groupedAttendance[date]) groupedAttendance[date] = [];
+        groupedAttendance[date].push(curr.subject);
+      } else {
+        if (!groupedAbsence[date]) groupedAbsence[date] = [];
+        groupedAbsence[date].push(curr.subject);
       }
-      acc[date].push(curr.subject); // Add subject to the group
-      return acc;
-    }, {});
-  
-    const labels = Object.keys(groupedAttendance); // Dates for X axis
-    const subjectCounts = labels.map((date) => groupedAttendance[date].length); // Count of subjects for Y axis
-  
-    chartInstance.current = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: labels, // X-axis = Dates
-        datasets: [
-          {
-            label: "Number of Subjects Attended",
-            data: subjectCounts, // Y-axis = Number of subjects attended
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
-              "rgba(255, 205, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(201, 203, 207, 0.2)",
-            ],
-            borderWidth: 1,
+    });
+
+    // Prepare data for attended chart
+    const attendedLabels = Object.keys(groupedAttendance);
+    const attendedCounts = attendedLabels.map((date) => groupedAttendance[date].length);
+
+    // Prepare data for absent chart
+    const absentLabels = Object.keys(groupedAbsence);
+    const absentCounts = absentLabels.map((date) => groupedAbsence[date].length);
+
+    // Render attended chart
+    if (attendedChartRef.current) {
+      const ctx = attendedChartRef.current.getContext("2d");
+      attendedChartInstance.current = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: attendedLabels,
+          datasets: [
+            {
+              label: "Number of Subjects Attended",
+              data: attendedCounts,
+              backgroundColor: "rgba(75, 192, 192, 0.5)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (tooltipItem) {
+                  const date = attendedLabels[tooltipItem.dataIndex];
+                  return groupedAttendance[date].join(", ");
+                },
+              },
+            },
           },
-        ],
-      },
-      options: {
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function (tooltipItem) {
-                const date = labels[tooltipItem.dataIndex]; // Get the date corresponding to the hovered bar
-                return groupedAttendance[date].join(', '); // Join all subjects for that date
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1, // Ensures only whole numbers are shown
+                precision: 0, // Removes decimal points
+              },
+              grid: {
+                display: false, // Hides the horizontal lines
+              },
+              title: {
+                display: true,
+                text: "Subjects Attended",
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Date",
               },
             },
           },
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1, // Ensures only whole numbers are shown
-              precision: 0, // Removes decimal points
+      });
+    }
+
+    // Render absent chart
+    if (absentChartRef.current) {
+      const ctx = absentChartRef.current.getContext("2d");
+      absentChartInstance.current = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: absentLabels,
+          datasets: [
+            {
+              label: "Number of Subjects Absent",
+              data: absentCounts,
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+              borderWidth: 1,
             },
-            grid: {
-              display: false, // Hides the horizontal lines
-            },
-            title: {
-              display: true,
-              text: "Subjects Attended",
+          ],
+        },
+        options: {
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (tooltipItem) {
+                  const date = absentLabels[tooltipItem.dataIndex];
+                  return groupedAbsence[date].join(", ");
+                },
+              },
             },
           },
-          x: {
-            title: {
-              display: true,
-              text: "Date",
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1, // Ensures only whole numbers are shown
+                precision: 0, // Removes decimal points
+              },
+              grid: {
+                display: false, // Hides the horizontal lines
+              },
+              title: {
+                display: true,
+                text: "Subjects Absent",
+              },
             },
-            grid: {
-              display: false, // Hides the horizontal lines
+            x: {
+              title: {
+                display: true,
+                text: "Date",
+              },
             },
           },
         },
-      },
-    });
-  
+      });
+    }
+
     return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
+      if (attendedChartInstance.current) attendedChartInstance.current.destroy();
+      if (absentChartInstance.current) absentChartInstance.current.destroy();
     };
   }, [attendances]);
-  
 
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
       <div>Class name : {attendances?.[0]?.classname}</div>
       <div>Student name : {attendances?.[0]?.name}</div>
-      <div className="w-full h-96">
-        <canvas ref={chartRef}></canvas>
+
+      {/* Attended Chart */}
+      <div className="w-full h-max md:h-96">
+        <canvas ref={attendedChartRef}></canvas>
       </div>
 
-      
+      {/* Absent Chart */}
+      <div className="w-full h-96 mt-10">
+        <canvas ref={absentChartRef}></canvas>
+      </div>
     </div>
   );
 };
