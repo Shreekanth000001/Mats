@@ -5,7 +5,8 @@ import "../index.css";
 
 const Class = ({ classId }) => {
   const [students, setStudents] = useState([]);
-  const [classes, setClasses] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [classname, setClassname] = useState("");
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -17,7 +18,10 @@ const Class = ({ classId }) => {
 
     fetch(`http://localhost:3000/classes/attendance?classid=${classId}`)
       .then((response) => response.json())
-      .then((data) => setClasses(data))
+      .then((data) => {
+        setSubjects(data.subjects); // Extract subjects array
+        setClassname(data.classname); // Extract classname
+      })
       .catch((error) => console.error("Error fetching attendance:", error));
   };
 
@@ -26,16 +30,15 @@ const Class = ({ classId }) => {
   }, []);
 
   useEffect(() => {
-    if (!classes.length) return;
+    if (!subjects.length) return;
 
-    // Count occurrences of each subject
-    const subjectCounts = classes.reduce((acc, curr) => {
-      acc[curr.subject] = (acc[curr.subject] || 0) + 1;
+    const subjectCounts = subjects.reduce((acc, subject) => {
+      acc[subject] = (acc[subject] || 0) + 1;
       return acc;
     }, {});
 
-    const subjects = Object.keys(subjectCounts);
-    const counts = Object.values(subjectCounts);
+    const labels = Object.keys(subjectCounts); // Unique subject names
+    const dataCounts = Object.values(subjectCounts); 
 
     // Destroy existing chart instance before creating a new one
     if (chartInstance.current) {
@@ -46,11 +49,11 @@ const Class = ({ classId }) => {
     chartInstance.current = new Chart(ctx, {
       type: "polarArea",
       data: {
-        labels: subjects, // Subjects as labels
+        labels: labels, // Subjects as labels
         datasets: [
           {
             label: "No. of Classes Conducted",
-            data: counts, // Subject counts as data
+            data: dataCounts, // Subject counts as data
             backgroundColor: [
               "rgba(255, 99, 132, 0.5)",
               "rgba(54, 162, 235, 0.5)",
@@ -64,6 +67,10 @@ const Class = ({ classId }) => {
         ],
       },
       options: {
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+        },
         responsive: true,
         plugins: {
           legend: {
@@ -78,19 +85,22 @@ const Class = ({ classId }) => {
         chartInstance.current.destroy();
       }
     };
-  }, [classes]);
+  }, [subjects]);
 
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
+      <span className="text-2xl font-bold">{classname}</span>
       <Link to={`/attendance/${classId}`} className="flex justify-end w-full">
         <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
           Take Attendance
         </button>
       </Link>
-
-      <div className="w-full h-max md:h-96">
+      <span className="text-2xl font-bold">Classes Conducted</span>
+      <div className="flex justify-center w-full h-max md:h-96">
         <canvas ref={chartRef}></canvas>
       </div>
+
+      <span className="text-2xl font-bold">Students </span>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {students.map((student) => (
@@ -99,8 +109,9 @@ const Class = ({ classId }) => {
             className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
           >
             <Link to={`/student/${student._id}`}>
-              <div>
-                <div>{student.name}</div>
+              <div className="flex">
+                <span>{`${student.slno}. `}</span>
+                <span> {student.name}</span>
                 <div className="mt-4 flex items-end justify-between"></div>
               </div>
             </Link>

@@ -74,13 +74,13 @@ const Attendance = ({ classId }) => {
           />
         </div>
         {students.map((student) => (
-          <div key={student._id} className="bg-white py-6 px-7.5 ">
-            <div className="flex items-center">
-              <div>{student.name}</div>
-              <div className="flex justify-end">
+          <div key={student._id} className="bg-white py-6 px-1 md:px-7.5 w-full">
+            <div className="flex justify-between items-center">
+              <div className="text-center">{student.name}</div>
+              <div className="flex">
                 <button
                   onClick={() => handleAttendance(student._id, "present")}
-                  className={`px-4 py-2 m-1 ${
+                  className={`px-2 py-2 rounded-2xl mr-1 ${
                     attendance[student._id] === "present"
                       ? "bg-green-500 text-white"
                       : "bg-gray-200"
@@ -91,7 +91,7 @@ const Attendance = ({ classId }) => {
 
                 <button
                   onClick={() => handleAttendance(student._id, "absent")}
-                  className={`px-4 py-2 m-1 ${
+                  className={`px-2 py-2 rounded-2xl ${
                     attendance[student._id] === "absent"
                       ? "bg-red-500 text-white"
                       : "bg-gray-200"

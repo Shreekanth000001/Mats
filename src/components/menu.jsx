@@ -57,12 +57,12 @@ const Menu = () => {
       {openmodal && (
         <div
           id="menu"
-          className="fixed top-[78px] md:top-0 inset-0 z-50 md:relative md:z-0"
+          className="fixed inset-0 z-50 md:relative md:z-0"
         >
           <div className="relative container mx-auto md:mx-0 w-80 md:w-96">
             <div
               ref={menuRef}
-              className="rounded-xl md:rounded-none bg-[#1C2434] text-white shadow-xl md:min-h-screen"
+              className="overflow-hidden fixed top-0 left-0 h-screen w-80 md:w-96 bg-[#1C2434] text-white shadow-xl"
               style={{
                 boxShadow:
                   "0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)",

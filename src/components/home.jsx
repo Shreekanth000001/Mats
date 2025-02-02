@@ -50,8 +50,8 @@ const Home = () => {
   };
 
   return (
-    <div className="App bg-[#F1F5F9] tracking-wide h-screen">
-      <div className="md:flex tracking-wider mb-7 md:mb-0">
+    <div className="App bg-[#F1F5F9] tracking-wide min-h-screen">
+      <div className="md:flex tracking-wider pb-2 md:mb-0">
         <Menu />
         {renderContent()}
       </div>
