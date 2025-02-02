@@ -90,11 +90,12 @@ const Class = ({ classId }) => {
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
       <span className="text-2xl font-bold">{classname}</span>
-      <Link to={`/attendance/${classId}`} className="flex justify-end w-full">
+      <div className="flex justify-end w-full">
+      <Link to={`/attendance/${classId}`}>
         <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
           Take Attendance
         </button>
-      </Link>
+      </Link></div>
       <span className="text-2xl font-bold">Classes Conducted</span>
       <div className="flex justify-center w-full h-max md:h-96">
         <canvas ref={chartRef}></canvas>
