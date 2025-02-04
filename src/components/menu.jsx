@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import "../index.css";
 import search from "../assets/search.png";
 import Logom from "../assets/logom.webp";
 
 const Menu = () => {
+  const navigate = useNavigate();
+    const userid = sessionStorage.getItem('userid');
   const [openmodal, setOpenmodal] = useState(false);
   const menuRef = useRef(null);
 
@@ -26,6 +29,12 @@ const Menu = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openmodal]);
+
+  const logout = () => {
+    sessionStorage.clear();
+    navigate('/');
+}
+
 
   return (
     <div className="">
@@ -159,14 +168,24 @@ const Menu = () => {
                     className="h-12 px-6 border-2 border-gray-300 rounded-full transition duration-300 
                                      hover:border-blue-400 focus:bg-blue-50 active:bg-blue-100 w-full flex items-center justify-center"
                   >
-                    <Link
-                      to="/login"
+                    {/*  */}
+                    {userid ? (<div
+                      onClick={logout}
                       className="w-full flex items-center space-x-4 justify-center"
                     >
                       <span className="font-semibold text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
-                        Sign In
+                        Sign Out
                       </span>
-                    </Link>
+                    </div>) : (
+                     <Link
+                     to="/login"
+                     className="w-full flex items-center space-x-4 justify-center"
+                   >
+                     <span className="font-semibold text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
+                       Sign In
+                     </span>
+                   </Link>)}
+                    {/*  */}
                   </li>
                 </ul>
 

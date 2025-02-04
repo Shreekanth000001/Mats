@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Alert from './alert';
 import Logom from '../assets/logom.webp';
 
 const Signup = () => {
+    const navigate = useNavigate();
     const [randomNo, setRandomNo] = useState(0);
     const [steps, setSteps] = useState(1);
     const [message, setMessage] = useState('');
@@ -20,6 +22,36 @@ const Signup = () => {
 
     const handleSteps = (n) => setSteps((prev) => prev + n);
 
+    const handleNextStep = () => {
+        let errors = [];
+    
+        if (!className || className.length < 3) {
+            errors.push("Class name must be longer than 3 letters.");
+        }
+        if (!description || description.length < 5) {
+            errors.push("Description must be at least 5 letters long.");
+        }
+        if (!course || course.length < 2) {
+            errors.push("Enter a valid course name.");
+        }
+        if (!section) {
+            errors.push("Enter section.");
+        }
+        if (!strength || isNaN(strength) || parseInt(strength) < 1) {
+            errors.push("Strength must be a number greater than zero.");
+        }
+        if (!subjects || subjects.length < 1 || subjects.some(sub => sub.trim() === "")) {
+            errors.push("There must be at least one subject.");
+        }
+    
+        if (errors.length > 0) {
+            setMessage(errors);
+            return;
+        }
+    
+        setMessage('');
+        handleSteps(1); 
+    };
 
     const handleNumSubjectsChange = (e) => {
         let num = parseInt(e.target.value, 10) || 0;
@@ -44,9 +76,8 @@ const Signup = () => {
             body: JSON.stringify({
                 name,
                 email,
-                classmod: 'moderator',
                 password,
-                subjects
+                classmod: 'moderator',  
             })
         });
         const data = await response.json();
@@ -92,7 +123,7 @@ const Signup = () => {
         }
     }
     const userClassSubmission = async (user) => {
-        const response = await fetch('http://localhost:3000/signup/class', {
+        const response = await fetch('http://localhost:3000/classes/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -104,12 +135,16 @@ const Signup = () => {
                 subjects: subjects,
                 strength: strength
             })
-        })
-        const data = await response.json()
-        if (!response.ok) {
-            console.error(data.message);
-        } else {
+        });
+        const data = await response.json();
+
+        if (!data.errors) {
             navigate('/');
+        }
+        else {
+            const newRandomNo = Math.floor(Math.random() * 11);
+            setRandomNo(newRandomNo);
+            setMessage(data.errors.map(errors => errors.msg));
         }
 
     }
@@ -153,7 +188,7 @@ const Signup = () => {
 
                                 </div>
                             </div>
-                            <button className='bg-[#020417] text-white mt-4 p-3 rounded-3xl w-fit' type="button" onClick={() => handleSteps(1)}>Next</button>
+                            <button className='bg-[#020417] text-white mt-4 p-3 rounded-3xl w-fit' type="button" onClick={handleNextStep}>Next</button>
                         </form>
                     </div>
                 </main>

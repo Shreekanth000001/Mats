@@ -13,7 +13,7 @@ function Login() {
   const handleSubmission = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function Login() {
   };
 
   const fetchuser = async (authToken) => {
-    const response = await fetch("getuser", {
+    const response = await fetch("http://localhost:3000/getuser", {
       method: "POST",
       headers: {
         authToken: authToken,
