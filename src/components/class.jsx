@@ -9,6 +9,7 @@ const Class = ({ classId }) => {
   const [classname, setClassname] = useState("");
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+  const classid = sessionStorage.getItem('classid');
 
   const fetchStudents = () => {
     fetch(`http://localhost:3000/students/class?classid=${classId}`)
@@ -38,7 +39,7 @@ const Class = ({ classId }) => {
     }, {});
 
     const labels = Object.keys(subjectCounts); // Unique subject names
-    const dataCounts = Object.values(subjectCounts); 
+    const dataCounts = Object.values(subjectCounts);
 
     // Destroy existing chart instance before creating a new one
     if (chartInstance.current) {
@@ -90,16 +91,19 @@ const Class = ({ classId }) => {
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
       <span className="text-2xl font-bold">{classname}</span>
+      {classid == classId ? (
       <div className="flex justify-end w-full">
-      <Link to={`/attendance/${classId}`}>
-        <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
-          Take Attendance
-        </button>
-      </Link></div>
+        <Link to={`/attendance/${classId}`}>
+          <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
+            Take Attendance
+          </button>
+        </Link></div>) :(<div></div>)}
       <span className="text-2xl font-bold">Classes Conducted</span>
+      {subjects.length>0 ? (
       <div className="flex justify-center w-full h-max md:h-96">
         <canvas ref={chartRef}></canvas>
-      </div>
+      </div>) : (<div className="flex justify-center w-full h-max md:h-96">No data available</div>)
+      }
 
       <span className="text-2xl font-bold">Students </span>
 
@@ -107,7 +111,7 @@ const Class = ({ classId }) => {
         {students.map((student) => (
           <div
             key={student._id}
-            className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
+            className="rounded-sm border border-stroke bg-white py-6 px-6 shadow-default dark:border-strokedark dark:bg-boxdark"
           >
             <Link to={`/student/${student._id}`}>
               <div className="flex">

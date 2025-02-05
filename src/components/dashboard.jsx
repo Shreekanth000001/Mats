@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 const Dashboard = ({ classdata, attendancedata }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+  const username = sessionStorage.getItem('username');
 
   const getLast7Days = () => {
     return [...Array(7)]
@@ -119,16 +120,18 @@ const Dashboard = ({ classdata, attendancedata }) => {
   return (
     <div id="Dashboard" className="w-full">
       <div className="hidden md:flex justify-end py-4 shadow-2 md:px-6 2xl:px-11">
+        {username ? (
         <div className="flex items-center">
-          <span className="mr-4">Name</span>
+          <span className="mr-4">{username}</span>
           <img className="w-9 h-9 rounded-full" src={Profilepic} alt="ntg" />
-        </div>
+        </div>) : (<div></div>)}
       </div>
+      {attendancedata.length>0 ? (
       <div className="w-full overflow-x-auto">
         <div className="flex justify-center md:w-[90%] md:ml-4 w-[600px] bg-white rounded-md shadow-md">
           <canvas ref={chartRef} className="min-h-[230px]"></canvas>
         </div>
-      </div>
+      </div>) : (<div>No data available</div> )}
       <div className="grid grid-cols-1 w-[90%] mx-auto gap-4 md:grid-cols-4 md:gap-6 xl:grid-cols-4 2xl:gap-7.5 mt-6">
         {classdata.map((classData) => (
           <div

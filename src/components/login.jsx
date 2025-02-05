@@ -40,12 +40,13 @@ function Login() {
         authToken: authToken,
       },
     });
-    const user = await response.json();
+    const data = await response.json();
     sessionStorage.setItem("authToken", authToken);
-    sessionStorage.setItem("userid", user._id);
-    sessionStorage.setItem("username", user.name);
-    sessionStorage.setItem("useremail", user.email);
-    sessionStorage.setItem("classmod", user.classmod);
+    sessionStorage.setItem("userid", data.user._id);
+    sessionStorage.setItem("username", data.user.name);
+    sessionStorage.setItem("useremail", data.user.email);
+    sessionStorage.setItem("classid", data.classid._id);
+    sessionStorage.setItem("classmod", data.user.classmod);
     navigate("/");
   };
 

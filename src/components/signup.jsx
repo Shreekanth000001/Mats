@@ -103,7 +103,8 @@ const Signup = () => {
         sessionStorage.setItem('authToken', authToken);
         sessionStorage.setItem('userid', user._id);
         sessionStorage.setItem('username', user.name);
-        sessionStorage.setItem('classmod', 'moderator');
+        sessionStorage.setItem('classmod', user.classmod);
+        sessionStorage.setItem('approved', user.approved);
         savepass(user);
     }
     const savepass = async (user) => {
@@ -139,6 +140,7 @@ const Signup = () => {
         const data = await response.json();
 
         if (!data.errors) {
+        sessionStorage.setItem('classid', data._id);
             navigate('/');
         }
         else {
@@ -174,10 +176,10 @@ const Signup = () => {
                                 <p className='font-bold p-2'></p>
                                 <div className='flex flex-col justify-center items-center space-y-2'>
                                     <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="name" name="className" placeholder='Class Name' required="" onChange={(e) => setClassName(e.target.value)} value={className} />
-                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="Description" name="description" placeholder='Description' required="" onChange={(e) => setDescription(e.target.value)} value={description} />
-                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="Course" name="course" placeholder='Course' required="" onChange={(e) => setCourse(e.target.value)} value={course} />
-                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="section" name="section" placeholder='Section' required="" onChange={(e) => setSection(e.target.value)} value={section} />
-                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="strength" name="strength" placeholder='strength' required="" onChange={(e) => setStrength(e.target.value)} value={strength} />
+                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="text" name="description" placeholder='Description' required="" onChange={(e) => setDescription(e.target.value)} value={description} />
+                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="text" name="course" placeholder='Course' required="" onChange={(e) => setCourse(e.target.value)} value={course} />
+                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="text" name="section" placeholder='Section' required="" onChange={(e) => setSection(e.target.value)} value={section} />
+                                    <input className='bg-white rounded-3xl w-full h-[50px] px-4 ' type="number" name="strength" placeholder='strength' required="" onChange={(e) => setStrength(e.target.value)} value={strength} />
                                     
                                     <input className='bg-white rounded-3xl w-full h-[50px] px-4' type="number" placeholder='Number of Subjects' required onChange={handleNumSubjectsChange} value={numSubjects} />
                                         <div className="overflow-y-auto max-h-[200px] w-full">

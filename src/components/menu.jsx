@@ -7,7 +7,7 @@ import Logom from "../assets/logom.webp";
 
 const Menu = () => {
   const navigate = useNavigate();
-    const userid = sessionStorage.getItem('userid');
+  const userid = sessionStorage.getItem('userid');
   const [openmodal, setOpenmodal] = useState(false);
   const menuRef = useRef(null);
 
@@ -33,7 +33,7 @@ const Menu = () => {
   const logout = () => {
     sessionStorage.clear();
     navigate('/');
-}
+  }
 
 
   return (
@@ -177,14 +177,14 @@ const Menu = () => {
                         Sign Out
                       </span>
                     </div>) : (
-                     <Link
-                     to="/login"
-                     className="w-full flex items-center space-x-4 justify-center"
-                   >
-                     <span className="font-semibold text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
-                       Sign In
-                     </span>
-                   </Link>)}
+                      <Link
+                        to="/login"
+                        className="w-full flex items-center space-x-4 justify-center"
+                      >
+                        <span className="font-semibold text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
+                          Sign In
+                        </span>
+                      </Link>)}
                     {/*  */}
                   </li>
                 </ul>
