@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Chart from "chart.js/auto";
 import { Link } from "react-router-dom";
 import "../index.css";
@@ -27,77 +27,78 @@ const Class = ({ classId }) => {
   };
 
   useEffect(() => {
+    if (!classId) return;
     fetchStudents();
-  }, []);
-
-  useEffect(() => {
-    if (!subjects.length) return;
-
-    const subjectCounts = subjects.reduce((acc, subject) => {
+  }, [classId]);
+  
+  const subjectCounts = useMemo(() => {
+    return subjects.reduce((acc, subject) => {
       acc[subject] = (acc[subject] || 0) + 1;
       return acc;
     }, {});
+  }, [subjects]); // ✅ Only recalculates when `subjects` changes
+  
 
-    const labels = Object.keys(subjectCounts); // Unique subject names
+  useEffect(() => {
+    if (!subjects.length) return;
+  
+    const labels = Object.keys(subjectCounts);
     const dataCounts = Object.values(subjectCounts);
-
-    // Destroy existing chart instance before creating a new one
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+  
+    if (!chartInstance.current) {
+      // ✅ Create a new chart only if it doesn’t exist
+      const ctx = chartRef.current.getContext("2d");
+      chartInstance.current = new Chart(ctx, {
+        type: "polarArea",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "No. of Classes Conducted",
+              data: dataCounts,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.5)",
+                "rgba(54, 162, 235, 0.5)",
+                "rgba(255, 206, 86, 0.5)",
+                "rgba(75, 192, 192, 0.5)",
+                "rgba(153, 102, 255, 0.5)",
+                "rgba(255, 159, 64, 0.5)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+          },
+        },
+      });
+    } else {
+      // ✅ Update chart instead of recreating it
+      chartInstance.current.data.labels = labels;
+      chartInstance.current.data.datasets[0].data = dataCounts;
+      chartInstance.current.update();
     }
-
-    const ctx = chartRef.current.getContext("2d");
-    chartInstance.current = new Chart(ctx, {
-      type: "polarArea",
-      data: {
-        labels: labels, // Subjects as labels
-        datasets: [
-          {
-            label: "No. of Classes Conducted",
-            data: dataCounts, // Subject counts as data
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.5)",
-              "rgba(54, 162, 235, 0.5)",
-              "rgba(255, 206, 86, 0.5)",
-              "rgba(75, 192, 192, 0.5)",
-              "rgba(153, 102, 255, 0.5)",
-              "rgba(255, 159, 64, 0.5)",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        ticks: {
-          stepSize: 1,
-          precision: 0,
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
-        },
-      },
-    });
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
-  }, [subjects]);
+  }, [subjects]); // ✅ Only updates when `subjects` changes
+  
 
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
       <span className="text-2xl font-bold">{classname}</span>
-      {classid == classId ? (
-      <div className="flex justify-end w-full">
-        <Link to={`/attendance/${classId}`}>
-          <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
-            Take Attendance
-          </button>
-        </Link></div>) :(<div></div>)}
+      {String(classid) === String(classId) && (
+  <div className="flex justify-end w-full">
+    <Link to={`/attendance/${classId}`}>
+      <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
+        Take Attendance
+      </button>
+    </Link>
+  </div>
+)}
+
       <span className="text-2xl font-bold">Classes Conducted</span>
       {subjects.length>0 ? (
       <div className="flex justify-center w-full h-max md:h-96">

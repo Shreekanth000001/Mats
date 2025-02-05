@@ -77,18 +77,20 @@ const Signup = () => {
                 name,
                 email,
                 password,
-                classmod: 'moderator',  
+                classmod: 'moderator',
             })
         });
         const data = await response.json();
 
-        if (!data.errors) {
+        if (!data.error) { // Change `data.errors` to `data.error`
+            console.log(data);
             fetchuser(data.authToken);
         }
         else {
             const newRandomNo = Math.floor(Math.random() * 11);
             setRandomNo(newRandomNo);
-            setMessage(data.errors.map(errors => errors.msg));
+            setMessage(data.error);  // Directly show the error message
+            console.log(data.error);  // Log the error message
         }
     }
 
@@ -98,15 +100,26 @@ const Signup = () => {
             headers: {
                 'authToken': authToken
             }
-        })
-        const user = await response.json();
+        });
+    
+        const data = await response.json();  // `data` contains { user: {...}, classid: null }
+        console.log("Fetched user:", data);  
+    
+        if (!data.user || !data.user._id) {
+            console.error("Error: User data is invalid", data);
+            return;
+        }
+    
         sessionStorage.setItem('authToken', authToken);
-        sessionStorage.setItem('userid', user._id);
-        sessionStorage.setItem('username', user.name);
-        sessionStorage.setItem('classmod', user.classmod);
-        sessionStorage.setItem('approved', user.approved);
-        savepass(user);
-    }
+        sessionStorage.setItem('userid', data.user._id);  // Access nested user object
+        sessionStorage.setItem('username', data.user.name);
+        sessionStorage.setItem('classmod', data.user.classmod);
+        sessionStorage.setItem('approved', data.user.approved);
+        console.log("User ID:", data.user._id);
+    
+        savepass(data.user);  // Pass the correct nested user object
+    };
+    
     const savepass = async (user) => {
         const response = await fetch('http://localhost:3000/userpass', {
             method: 'POST',
@@ -117,6 +130,7 @@ const Signup = () => {
             })
         })
         const userpass = await response.json();
+        console.log(userpass);
         if (!userpass.errors) {
             userClassSubmission(user);
         } else {
@@ -138,7 +152,7 @@ const Signup = () => {
             })
         });
         const data = await response.json();
-
+        console.log(data);
         if (!data.errors) {
         sessionStorage.setItem('classid', data._id);
             navigate('/');
