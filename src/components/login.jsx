@@ -46,9 +46,9 @@ function Login() {
     sessionStorage.setItem("username", data.user.name);
     sessionStorage.setItem("useremail", data.user.email);
     sessionStorage.setItem("classmod", data.user.classmod);
-  
-  if(!sessionStorage.getItem('classmod') == 'admin')
-    sessionStorage.setItem("classid", data.classid._id);
+    const sessionClassmod = data.user.classmod;
+    if(sessionClassmod != "admin"){
+    sessionStorage.setItem("classid", data.classid._id);}
     navigate("/");
   };
 

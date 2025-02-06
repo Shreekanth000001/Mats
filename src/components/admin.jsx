@@ -1,20 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../index.css";
+import Alert from './alert';
 
 const Admin = ({ classes, attendance }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [randomNo, setRandomNo] = useState(0);
   const [users, setUsers] = useState({});
+  const [helps, setHelps] = useState({});
+  const [students, setStudents] = useState({});
   const [pendingUsers, setPendingUsers] = useState({});
   const [selectedFromDate, setSelectedFromDate] = useState("");
   const [selectedToDate, setSelectedToDate] = useState("");
   const [editableAttendance, setEditableAttendance] = useState(attendance || []);
 
-  // Extract the active tab from the URL
-  const adminTabs = ["Manage Classes", "Manage Attendance", "Admin Users", "Pending Approval"];
+  const adminTabs = ["Manage Classes", "Manage Students", "Manage Attendance", "Manage Users", "Pending Approval", "Contacts"];
   const currentTab = adminTabs.find(tab => location.pathname.includes(tab.replace(/\s+/g, "-").toLowerCase()))
     || "Manage Classes";
 
@@ -25,7 +28,6 @@ const Admin = ({ classes, attendance }) => {
     setIsOpen(false);
   };
 
-  // Handle status change for a student
   const handleStatusChange = (recordId, studentId, newStatus) => {
     setEditableAttendance((prevAttendance) =>
       prevAttendance.map((record) =>
@@ -45,6 +47,18 @@ const Admin = ({ classes, attendance }) => {
     fetch("http://localhost:3000/getuser/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching users:", error));
+  }
+  const fetchhelps = () => {
+    fetch("http://localhost:3000/help/getall")
+      .then((response) => response.json())
+      .then((data) => setHelps(data))
+      .catch((error) => console.error("Error fetching users:", error));
+  }
+  const fetchstudents = () => {
+    fetch("http://localhost:3000/students/getall")
+      .then((response) => response.json())
+      .then((data) => setStudents(data))
       .catch((error) => console.error("Error fetching users:", error));
   }
   const fetchpendinguser = () => {
@@ -67,12 +81,11 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("Attendance updated successfully!", data);
+      setMessage("Attendance updated successfully!");
     } catch (error) {
-      console.error("Error updating attendance:", error);
+      setMessage("Error updating attendance");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
   const Approval = async (pendingUserId) => {
 
@@ -86,11 +99,11 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
-      console.log("approval updated successfully!", data);
+      setMessage("approval updated successfully!");
     } catch (error) {
-      console.error("Error updating approval:", error);
+      setMessage("Error updating approval");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
   const noApproval = async (pendingUserId) => {
 
@@ -104,11 +117,11 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
-      console.log("approval updated successfully!", data);
+      setMessage("approval updated successfully!");
     } catch (error) {
-      console.error("Error updating approval:", error);
+      setMessage("Error updating approval");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
 
   const deleteAttendance = async (attendanceId) => {
@@ -122,12 +135,11 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("Attendance deleted successfully!", data);
+      setMessage("Attendance deleted successfully!");
     } catch (error) {
-      console.error("Error deleting attendance:", error);
+      setMessage("Error deleting attendance");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
   const deleteClass = async (classId) => {
     try {
@@ -140,12 +152,28 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("Attendance deleted successfully!", data);
+      setMessage("Attendance deleted successfully!");
     } catch (error) {
-      console.error("Error deleting attendance:", error);
+      setMessage("Error deleting attendance:");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
+  };
+  const deleteStudent = async (studentId) => {
+    try {
+      const response = await fetch("http://localhost:3000/students/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      setMessage("student deleted successfully!");
+    } catch (error) {
+      setMessage("Error deleting student:");
+    }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
   const deleteUser = async (userId) => {
     try {
@@ -158,18 +186,36 @@ const Admin = ({ classes, attendance }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log("user deleted successfully!", data);
+      setMessage("user deleted successfully!");
     } catch (error) {
-      console.error("Error deleting user:", error);
+      setMessage("Error deleting user:");
     }
+    setRandomNo(Math.floor(Math.random() * 11));
+  };
+  const deleteHelp = async (helpId) => {
+    try {
+      const response = await fetch("http://localhost:3000/help/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ helpId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      setMessage("user deleted help!");
+    } catch (error) {
+      setMessage("Error deleting help:");
+    }
+    setRandomNo(Math.floor(Math.random() * 11));
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchusers();
+    fetchstudents();
+    fetchhelps();
     fetchpendinguser();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -191,8 +237,7 @@ const Admin = ({ classes, attendance }) => {
         <button
           className="text-light-black pr-9 md:w-[219px] bg-[#F6F7F9] hover:bg-gray-100 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center"
           type="button"
-          onClick={toggleDropdown}
-        >
+          onClick={toggleDropdown}>
           {currentTab}
           <svg className="w-2.5 h-2.5 absolute right-1 m-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
@@ -206,8 +251,7 @@ const Admin = ({ classes, attendance }) => {
                 <li key={item}>
                   <button
                     className="block px-4 py-2 w-full text-left hover:bg-gray-100"
-                    onClick={() => handleSelect(item)}
-                  >
+                    onClick={() => handleSelect(item)}>
                     {item}
                   </button>
                 </li>
@@ -218,6 +262,7 @@ const Admin = ({ classes, attendance }) => {
       </div>
 
       <div className="mt-10 space-y-6">
+      {message && <Alert message={message} bgcolor={'[#F6F7F9]'} newRandomNo={randomNo} />}
         {currentTab === "Manage Classes" && (
           <div className="p-6 bg-white shadow rounded-xl">
             <h3 className="text-lg font-semibold">Manage Classes</h3>
@@ -236,6 +281,29 @@ const Admin = ({ classes, attendance }) => {
             )}
           </div>
         )}
+
+        {currentTab === "Manage Students" && (
+          <div className="p-6 bg-white shadow rounded-xl">
+            <h3 className="text-lg font-semibold">Manage Students</h3>
+            <p className="text-sm text-gray-600 mt-2">Here you can manage student details.</p>
+
+            {students && students.length ? (
+              <ul className="mt-4">
+                {students.map((student) => (
+                  <li key={student._id} className="p-2 border-b flex justify-between">
+                    {student.name} - Class ID: {student.classid}
+                    <button onClick={() => deleteStudent(student._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No students available.</p>
+            )}
+          </div>
+        )}
+
 
         {currentTab === "Manage Attendance" && (
           <div className="p-6 bg-white shadow rounded-xl w-full">
@@ -321,45 +389,64 @@ const Admin = ({ classes, attendance }) => {
           </div>
         )}
 
-        {currentTab === "Admin Users" && (
-           <div className="p-6 bg-white shadow rounded-xl">
-           <h3 className="text-lg font-semibold">Manage Users</h3>
-           <p className="text-sm text-gray-600 mt-2">Here you can manage user details.</p>
-           {/* Display Classes Data */}
-           {users && users.length ? (
-             <ul className="mt-4">
-               {users.map((user) => (
-                 <li key={user._id} className="p-2 border-b flex justify-between">{user.name} - {user.email}
-                   <button onClick={() => deleteUser(user._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm" >
-                     delete </button> </li>
-               ))}
-             </ul>
-           ) : (
-             <p className="text-gray-500">No classes available.</p>
-           )}
-         </div>
+        {currentTab === "Manage Users" && (
+          <div className="p-6 bg-white shadow rounded-xl">
+            <h3 className="text-lg font-semibold">Manage Users</h3>
+            <p className="text-sm text-gray-600 mt-2">Here you can manage user details.</p>
+            {/* Display Classes Data */}
+            {users && users.length ? (
+              <ul className="mt-4">
+                {users
+                  .filter((user) => user.name !== "Admin").map((user) => (
+                    <li key={user._id} className="p-2 border-b flex justify-between">{user.name} - {user.email}
+                      <button onClick={() => deleteUser(user._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm" >
+                        delete </button> </li>
+                  ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No classes available.</p>
+            )}
+          </div>
         )}
 
         {currentTab === "Pending Approval" && (
           <div className="p-6 bg-white shadow rounded-xl">
-          <h3 className="text-lg font-semibold">Manage Users</h3>
-          <p className="text-sm text-gray-600 mt-2">Here you can manage user details.</p>
-          {/* Display Classes Data */}
-          {users && users.length ? (
-            <ul className="mt-4">
-              {pendingUsers.map((pendingUser) => (
-                <li key={pendingUser._id} className="p-2 border-b flex justify-between">{pendingUser.name} - {pendingUser.email}
-                <div>
-                  <button onClick={() => Approval(pendingUser._id)} className="bg-blue-500 mr-2 text-white px-3 py-1 rounded text-sm" >
-                    Approve </button>
-                  <button onClick={() => noApproval(pendingUser._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm" >
-                    Not approved </button> </div></li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No classes available.</p>
-          )}
-        </div>
+            <h3 className="text-lg font-semibold">Manage Users</h3>
+            <p className="text-sm text-gray-600 mt-2">Here you can manage user details.</p>
+            {/* Display Classes Data */}
+            {users && users.length ? (
+              <ul className="mt-4">
+                {pendingUsers.map((pendingUser) => (
+                  <li key={pendingUser._id} className="p-2 border-b flex justify-between">{pendingUser.name} - {pendingUser.email}
+                    <div>
+                      <button onClick={() => Approval(pendingUser._id)} className="bg-blue-500 mr-2 text-white px-3 py-1 rounded text-sm" >
+                        Approve </button>
+                      <button onClick={() => noApproval(pendingUser._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm" >
+                        Not approved </button> </div></li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No classes available.</p>
+            )}
+          </div>
+        )}
+        {currentTab === "Contacts" && (
+          <div className="p-6 bg-white shadow rounded-xl">
+            <h3 className="text-lg font-semibold">Contacts</h3>
+            <p className="text-sm text-gray-600 mt-2">Here you can manage queries and problems.</p>
+            {/* Display Classes Data */}
+            {helps && helps.length ? (
+              <ul className="mt-4">
+                {helps.map((help) => (
+                  <li key={help._id} className="p-2 border-b flex justify-between">{help.title} - {help.description}
+                    <button onClick={() => deleteHelp(help._id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm" >
+                      delete </button></li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No contacts available.</p>
+            )}
+          </div>
         )}
       </div>
     </div>

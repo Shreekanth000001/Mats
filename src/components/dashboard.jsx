@@ -9,6 +9,9 @@ const Dashboard = ({ classdata, attendancedata }) => {
   const chartInstance = useRef(null);
   const username = sessionStorage.getItem('username');
 
+  const today = new Date().toLocaleDateString("en-CA");
+
+
   const getLast7Days = () => {
     return [...Array(7)]
       .map((_, i) => {
@@ -146,7 +149,7 @@ const Dashboard = ({ classdata, attendancedata }) => {
                     <div className="font-bold">{classData.strength}</div>
                     <span className="text-[#65758C]">Total attendance</span>
                   </div>
-                  <div>{getAttendanceRate(classData._id, last7Days[5])}%</div>
+                  <div>{getAttendanceRate(classData._id, today)}%</div>
                 </div>
               </div>
             </Link>

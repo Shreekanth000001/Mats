@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../index.css";
 
-const Attendance = ({ classId }) => {
+const Attendance = ({ subjects, classId }) => {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
   const [selectedDate, setSelectedDate] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
 
   const handleAttendance = (studentId, status) => {
     setAttendance((prev) => ({
@@ -17,17 +18,12 @@ const Attendance = ({ classId }) => {
     fetch(`http://localhost:3000/students/class?classid=${classId}`)
       .then((response) => response.json())
       .then((data) => setStudents(data))
-      .catch((error) => console.error("Error fetching classes:", error));
+      .catch((error) => console.error("Error fetching students:", error));
   };
 
-  const formattedStudents = Object.keys(attendance).map((studentId) => ({
-    studentId: studentId,
-    status: attendance[studentId],
-  }));
-
   const sendAttendance = () => {
-    if (!selectedDate) {
-      alert("Please select a date and time!");
+    if (!selectedDate || !selectedSubject) {
+      alert("Please select a date and subject!");
       return;
     }
 
@@ -44,7 +40,7 @@ const Attendance = ({ classId }) => {
       body: JSON.stringify({
         classId: classId,
         date: new Date(selectedDate).toISOString(),
-        subject: "Web Development",
+        subject: selectedSubject, // Send the selected subject
         students: formattedStudents,
       }),
     })
@@ -61,9 +57,11 @@ const Attendance = ({ classId }) => {
   useEffect(() => {
     fetchStudents();
   }, []);
+
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
-      <div className="">
+      <div className="flex space-x-4 items-end">
+        {/* Date Input */}
         <div className="w-48">
           <label className="block text-gray-700">Select Date & Time:</label>
           <input
@@ -73,6 +71,27 @@ const Attendance = ({ classId }) => {
             className="border rounded p-2 w-full"
           />
         </div>
+
+        {/* Subject Dropdown */}
+        <div className="w-48">
+          <label className="block text-gray-700">Select Subject:</label>
+          <select
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+            className="border rounded p-2 w-full"
+          >
+            <option value="">-- Select Subject --</option>
+            {subjects.map((subject, index) => (
+              <option key={index} value={subject}>
+                {subject}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Student Attendance List */}
+      <div className="mt-6">
         {students.map((student) => (
           <div key={student._id} className="bg-white py-6 px-1 md:px-7.5 w-full">
             <div className="flex justify-between items-center">
@@ -104,6 +123,8 @@ const Attendance = ({ classId }) => {
           </div>
         ))}
       </div>
+
+      {/* Submit Button */}
       <button
         onClick={sendAttendance}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"

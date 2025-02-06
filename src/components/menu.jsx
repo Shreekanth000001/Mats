@@ -137,13 +137,13 @@ const Menu = () => {
                 <div className="mt-10 space-y-4 text-center sm:-mb-8 h-min">
                   <p className="text-xs">
                     By proceeding, you agree to our{" "}
-                    <a href="" className="underline">
+                    <Link href="/aboutus" className="underline">
                       Disclaimer
-                    </a>{" "}
+                    </Link>{" "}
                     and confirm you have read our{" "}
-                    <a href="" className="underline">
+                    <Link to="/aboutus" className="underline">
                       Privacy and Cookie Statement
-                    </a>
+                    </Link>
                     .
                   </p>
                 </div>

@@ -10,6 +10,7 @@ const Class = ({ classId }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const classid = sessionStorage.getItem('classid');
+  console.log(sessionStorage);
 
   const fetchStudents = () => {
     fetch(`http://localhost:3000/students/class?classid=${classId}`)
@@ -94,6 +95,11 @@ const Class = ({ classId }) => {
     <Link to={`/attendance/${classId}`}>
       <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
         Take Attendance
+      </button>
+    </Link>
+    <Link to={`/addstudents/${classId}`}>
+      <button className="bg-[#0059ff] text-white h-10 w-40 rounded-xl">
+        Update Students
       </button>
     </Link>
   </div>
