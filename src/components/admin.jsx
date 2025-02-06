@@ -44,25 +44,25 @@ const Admin = ({ classes, attendance }) => {
   };
 
   const fetchusers = () => {
-    fetch("http://localhost:3000/getuser/users")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
   }
   const fetchhelps = () => {
-    fetch("http://localhost:3000/help/getall")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/help/getall")
       .then((response) => response.json())
       .then((data) => setHelps(data))
       .catch((error) => console.error("Error fetching users:", error));
   }
   const fetchstudents = () => {
-    fetch("http://localhost:3000/students/getall")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/getall")
       .then((response) => response.json())
       .then((data) => setStudents(data))
       .catch((error) => console.error("Error fetching users:", error));
   }
   const fetchpendinguser = () => {
-    fetch("http://localhost:3000/getuser/pendingusers")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser/pendingusers")
       .then((response) => response.json())
       .then((data) => setPendingUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -72,7 +72,7 @@ const Admin = ({ classes, attendance }) => {
     const updatedRecord = editableAttendance.find((record) => record._id === recordId);
 
     try {
-      const response = await fetch("http://localhost:3000/attendance/update", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/attendance/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedRecord),
@@ -90,7 +90,7 @@ const Admin = ({ classes, attendance }) => {
   const Approval = async (pendingUserId) => {
 
     try {
-      const response = await fetch("http://localhost:3000/getuser/approval", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser/approval", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pendingUserId }),
@@ -108,7 +108,7 @@ const Admin = ({ classes, attendance }) => {
   const noApproval = async (pendingUserId) => {
 
     try {
-      const response = await fetch("http://localhost:3000/getuser/disapproval", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser/disapproval", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pendingUserId }),
@@ -126,7 +126,7 @@ const Admin = ({ classes, attendance }) => {
 
   const deleteAttendance = async (attendanceId) => {
     try {
-      const response = await fetch("http://localhost:3000/attendance/delete", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/attendance/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ attendanceId }),
@@ -143,7 +143,7 @@ const Admin = ({ classes, attendance }) => {
   };
   const deleteClass = async (classId) => {
     try {
-      const response = await fetch("http://localhost:3000/classes/delete", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/classes/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ classId }),
@@ -160,7 +160,7 @@ const Admin = ({ classes, attendance }) => {
   };
   const deleteStudent = async (studentId) => {
     try {
-      const response = await fetch("http://localhost:3000/students/delete", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId }),
@@ -177,7 +177,7 @@ const Admin = ({ classes, attendance }) => {
   };
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch("http://localhost:3000/getuser/delete", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
@@ -194,7 +194,7 @@ const Admin = ({ classes, attendance }) => {
   };
   const deleteHelp = async (helpId) => {
     try {
-      const response = await fetch("http://localhost:3000/help/delete", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/help/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ helpId }),

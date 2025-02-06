@@ -14,7 +14,7 @@ const Student = ({ studentId }) => {
   );
 
   useEffect(() => {
-    fetch(`http://localhost:3000/students/attendance?studentid=${studentId}`)
+    fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/attendance?studentid=${studentId}`)
       .then((response) => response.json())
       .then((data) => setAttendances(data))
       .catch((error) => console.error("Error fetching attendance:", error));

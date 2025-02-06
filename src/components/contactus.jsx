@@ -16,7 +16,7 @@ const Contactus = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/help', {
+            const response = await fetch('https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/help', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title, description }),

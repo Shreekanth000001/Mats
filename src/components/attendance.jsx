@@ -15,7 +15,7 @@ const Attendance = ({ subjects, classId }) => {
   };
 
   const fetchStudents = () => {
-    fetch(`http://localhost:3000/students/class?classid=${classId}`)
+    fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/class?classid=${classId}`)
       .then((response) => response.json())
       .then((data) => setStudents(data))
       .catch((error) => console.error("Error fetching students:", error));
@@ -32,7 +32,7 @@ const Attendance = ({ subjects, classId }) => {
       status: attendance[studentId],
     }));
 
-    fetch("http://localhost:3000/attendance", {
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/attendance", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

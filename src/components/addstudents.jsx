@@ -7,7 +7,7 @@ const Addstudents = ({ classId }) => {
   // Fetch students from the class
   const fetchStudents = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/students/class?classid=${classId}`);
+      const response = await fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/class?classid=${classId}`);
       if (!response.ok) throw new Error("Failed to fetch students");
       const data = await response.json();
       setStudents(data);
@@ -29,7 +29,7 @@ const Addstudents = ({ classId }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/students", {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

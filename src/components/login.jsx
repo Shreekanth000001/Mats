@@ -13,7 +13,7 @@ function Login() {
   const handleSubmission = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/login", {
+    const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function Login() {
   };
 
   const fetchuser = async (authToken) => {
-    const response = await fetch("http://localhost:3000/getuser", {
+    const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser", {
       method: "POST",
       headers: {
         authToken: authToken,

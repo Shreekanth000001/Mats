@@ -13,12 +13,12 @@ const Class = ({ classId }) => {
   console.log(sessionStorage);
 
   const fetchStudents = () => {
-    fetch(`http://localhost:3000/students/class?classid=${classId}`)
+    fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/class?classid=${classId}`)
       .then((response) => response.json())
       .then((data) => setStudents(data))
       .catch((error) => console.error("Error fetching classes:", error));
 
-    fetch(`http://localhost:3000/classes/attendance?classid=${classId}`)
+    fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/classes/attendance?classid=${classId}`)
       .then((response) => response.json())
       .then((data) => {
         setSubjects(data.subjects); // Extract subjects array

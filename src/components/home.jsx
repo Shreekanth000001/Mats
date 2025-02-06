@@ -17,7 +17,7 @@ const Home = () => {
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
   const fetchClasses = () => {
-    fetch("http://localhost:3000/")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/")
       .then((response) => response.json())
       .then((data) => setClasses(data))
       .catch((error) => console.error("Error fetching classes:", error));
@@ -25,7 +25,7 @@ const Home = () => {
 
   const fetchAttendances = () => {
     setLoading(true);  // Set loading to true before fetching
-    fetch("http://localhost:3000/attendance/getall")
+    fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/attendance/getall")
       .then((response) => response.json())
       .then((data) => {
         setAttendances(data);

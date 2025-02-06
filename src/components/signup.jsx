@@ -70,7 +70,7 @@ const Signup = () => {
     const submission = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:3000/signup', {
+        const response = await fetch('https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -95,7 +95,7 @@ const Signup = () => {
     }
 
     const fetchuser = async (authToken) => {
-        const response = await fetch('http://localhost:3000/getuser', {
+        const response = await fetch('https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser', {
             method: 'POST',
             headers: {
                 'authToken': authToken
@@ -121,7 +121,7 @@ const Signup = () => {
     };
     
     const savepass = async (user) => {
-        const response = await fetch('http://localhost:3000/userpass', {
+        const response = await fetch('https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/userpass', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -138,7 +138,7 @@ const Signup = () => {
         }
     }
     const userClassSubmission = async (user) => {
-        const response = await fetch('http://localhost:3000/classes/', {
+        const response = await fetch('https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/classes/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
