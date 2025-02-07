@@ -11,6 +11,13 @@ const Menu = () => {
   const userstatus = sessionStorage.getItem('classmod');
   const [openmodal, setOpenmodal] = useState(false);
   const menuRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() === "") return;
+    navigate(`/students/${encodeURIComponent(searchQuery)}`);
+  };
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -52,9 +59,9 @@ const Menu = () => {
               <p className="bg-white rounded-sm w-2 h-2"></p>
             </div>
           </div>
-          <div className="flex ml-4 justify-center w-[70%]">
+          <div className="flex ml-4 justify-center items-center w-[70%]">
             <img className="w-9 h-9 mr-2 rounded-full" src={Logom} alt="logo" />
-            <span>MATS</span>
+            <span className="font-extrabold">MATS</span>
           </div>
         </div>
       </div>
@@ -72,15 +79,22 @@ const Menu = () => {
                 <div className="space-y-4">
                   <h2 className="mb-8 text-2xl font-bold">Menu</h2>
                 </div>
-                <div className="flex items-center justify-center w-full">
-                  <div id="search bar" className="flex w-full bg-white text-black border rounded-full" >
-                    <input className=" w-full border-none bg-transparent px-4 py-1 outline-none focus:outline-none "
-                      type="search" name="search" placeholder="Search..." />
-                    <button type="submit" className="m-2 ml-auto rounded px-4 py-2" >
-                      <img src={search} className="w-8" />
+                <form onSubmit={handleSearch} className="flex items-center justify-center w-full">
+                  <div className="flex w-full bg-white text-black border rounded-full">
+                    <input
+                      className="w-full border-none bg-transparent px-4 py-1 outline-none focus:outline-none"
+                      type="search"
+                      name="search"
+                      placeholder="Search..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button type="submit" className="m-2 ml-auto rounded px-4 py-2">
+                      <img src={search} className="w-8" alt="Search" />
                     </button>
                   </div>
-                </div>
+                </form>
+
                 <ul id="ul" className="mt-16 grid space-y-4">
                   <li className="h-12 px-6 border-2 border-gray-300 rounded-full transition duration-300 
  hover:border-blue-400 focus:bg-blue-50 active:bg-blue-100 flex items-center space-x-4 justify-center">

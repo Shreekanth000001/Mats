@@ -10,6 +10,7 @@ import Addstudents from "./addstudents";
 import Admin from "./admin";
 import Aboutus from "./aboutus";
 import Contactus from "./contactus";
+import Search from "./search";
 
 const Home = () => {
   const location = useLocation();
@@ -55,10 +56,14 @@ const Home = () => {
       const studentid = location.pathname.split('/')[2];
       return <Student studentId={studentid} />;
     }
+    else if (location.pathname.startsWith('/students/')) {
+      const searchque = location.pathname.split('/')[2];
+      return <Search searchque={searchque} />;
+    }
     else if (location.pathname.startsWith('/attendance/')) {
       const classid = location.pathname.split('/')[2];
-      const classdata = classes.find(cls => cls._id === classid); // Find matching class
-      const subjects = classdata ? classdata.subjects : []; // Extract only subjects
+      const classdata = classes.find(cls => cls._id === classid);
+      const subjects = classdata ? classdata.subjects : [];
 
       return <Attendance subjects={subjects} classId={classid} />;
     }

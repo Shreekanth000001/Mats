@@ -10,7 +10,7 @@ const Student = ({ studentId }) => {
   const absentChartInstance = useRef(null);
   const [subjectCounts, setSubjectCounts] = useState({});
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0] // Default: Today’s date
+    new Date().toISOString().split("T")[0]
   );
 
   useEffect(() => {
