@@ -112,7 +112,7 @@ function Login() {
                 </button>
                 <p className="text-sm font-light text-gray-500">
                   Don’t have an account yet?{" "}
-                  <a href="/signup"
+                  <a href="https://mats-edu.vercel.app/signup"
                     className="font-medium text-primary-600 underline" >
                     Sign up
                   </a>

@@ -139,12 +139,12 @@ const Menu = () => {
                         Sign Out
                       </span>
                     </div>) : (
-                      <Link to="/login"
+                      <a href="https://mats-edu.vercel.app/login"
                         className="w-full flex items-center space-x-4 justify-center" >
                         <span className="font-semibold text-sm transition duration-300 group-hover:text-blue-600 sm:text-base">
                           Sign In
                         </span>
-                      </Link>)}
+                      </a>)}
                   </li>
                 </ul>
 
