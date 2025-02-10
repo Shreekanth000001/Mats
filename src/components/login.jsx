@@ -34,23 +34,48 @@ function Login() {
   };
 
   const fetchuser = async (authToken) => {
-    const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser", {
-      method: "POST",
-      headers: {
-        authToken: authToken,
-      },
-    });
-    const data = await response.json();
-    sessionStorage.setItem("authToken", authToken);
-    sessionStorage.setItem("userid", data.user._id);
-    sessionStorage.setItem("username", data.user.name);
-    sessionStorage.setItem("useremail", data.user.email);
-    sessionStorage.setItem("classmod", data.user.classmod);
-    const sessionClassmod = data.user.classmod;
-    if(sessionClassmod != "admin"){
-    sessionStorage.setItem("classid", data.classid._id);}
-    navigate("/");
+    try {
+      const response = await fetch("https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/getuser", {
+        method: "POST",
+        headers: {
+          authToken: authToken,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+  
+      const data = await response.json();
+  
+      if (!data.user) {
+        throw new Error("User data is missing");
+      }
+  
+      sessionStorage.setItem("authToken", authToken);
+      sessionStorage.setItem("userid", data.user._id);
+      sessionStorage.setItem("username", data.user.name);
+      sessionStorage.setItem("useremail", data.user.email);
+      sessionStorage.setItem("classmod", data.user.classmod);
+  
+      const sessionClassmod = data.user.classmod;
+      
+      if (sessionClassmod !== "admin") {
+        if (data.classid && data.classid._id) {
+          sessionStorage.setItem("classid", data.classid._id);
+        } else {
+          setMessage("User not approved");
+          return; // Prevent navigation if user is not approved
+        }
+      }
+  
+      navigate("/");
+    } catch (error) {
+      console.error("Error fetching user:", error.message);
+      setMessage("Login failed. Please try again.");
+    }
   };
+  
 
   const forgot = () => {
     const newRandomNo = Math.floor(Math.random() * 11);

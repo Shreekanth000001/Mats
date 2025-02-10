@@ -25,28 +25,40 @@ const Dashboard = ({ classdata, attendancedata }) => {
   const last7Days = getLast7Days();
 
   const getAttendanceRate = (classId, date) => {
-    // Convert date to YYYY-MM-DD format for comparison
     const formattedDate = new Date(date).toISOString().split("T")[0];
 
     // Filter attendance records for the given class and date
     const attendanceForDay = attendancedata.filter(
-      (entry) =>
-        entry.classId === classId &&
-        new Date(entry.date).toISOString().split("T")[0] === formattedDate
+        (entry) =>
+            entry.classId === classId &&
+            new Date(entry.date).toISOString().split("T")[0] === formattedDate
     );
 
     if (!attendanceForDay.length) return 0;
 
-    // Sum up student counts across multiple sessions
-    const totalPresent = attendanceForDay.reduce(
-      (sum, entry) => sum + entry.students.length,
-      0
-    );
-    const classStrength =
-      classdata.find((cls) => cls._id === classId)?.strength || 1; // Avoid division by zero
+    // Collect students who attended at least one subject
+    const studentsAttended = new Set();
+    attendanceForDay.forEach(entry => {
+        const hasPresent = entry.students.some(student => student.status === "present");
+        if (hasPresent) {
+            entry.students.forEach(student => {
+                if (student.status === "present") {
+                    studentsAttended.add(student.studentId);
+                }
+            });
+        }
+    });
+
+    const totalPresent = studentsAttended.size;
+    const classStrength = classdata.find((cls) => cls._id === classId)?.strength || 1; // Avoid division by zero
 
     return ((totalPresent / classStrength) * 100).toFixed(1);
-  };
+};
+
+  
+  
+
+  
 
   useEffect(() => {
     if (!classdata.length || !attendancedata.length) return;

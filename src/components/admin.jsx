@@ -414,7 +414,7 @@ const Admin = ({ classes, attendance }) => {
             <h3 className="text-lg font-semibold">Manage Users</h3>
             <p className="text-sm text-gray-600 mt-2">Here you can manage user details.</p>
             {/* Display Classes Data */}
-            {users && users.length ? (
+            {pendingUsers && pendingUsers.length ? (
               <ul className="mt-4">
                 {pendingUsers.map((pendingUser) => (
                   <li key={pendingUser._id} className="p-2 border-b flex justify-between">{pendingUser.name} - {pendingUser.email}
@@ -426,7 +426,7 @@ const Admin = ({ classes, attendance }) => {
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500">No classes available.</p>
+              <p className="text-gray-500">No Approvals pending.</p>
             )}
           </div>
         )}

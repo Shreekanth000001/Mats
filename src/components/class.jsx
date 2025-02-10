@@ -10,7 +10,6 @@ const Class = ({ classId }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const classid = sessionStorage.getItem('classid');
-  console.log(sessionStorage);
 
   const fetchStudents = () => {
     fetch(`https://yeasty-claribel-critic-coder-743a0cb5.koyeb.app/students/class?classid=${classId}`)
@@ -89,7 +88,7 @@ const Class = ({ classId }) => {
 
   return (
     <div id="Class" className="w-full pl-4 pr-1.5 pt-9">
-      <span className="text-2xl font-bold">{classname}</span>
+      <span className="text-2xl font-bold">{classname + ` `} </span>
       {String(classid) === String(classId) && (
   <div className="flex justify-end w-full">
     <Link to={`/attendance/${classId}`}>

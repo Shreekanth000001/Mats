@@ -143,7 +143,7 @@ const Signup = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userid: user._id,
-                name: name,
+                name: className,
                 description: description,
                 course: course,
                 section: section,
@@ -152,7 +152,6 @@ const Signup = () => {
             })
         });
         const data = await response.json();
-        console.log(data);
         if (!data.errors) {
         sessionStorage.setItem('classid', data._id);
             navigate('/');
