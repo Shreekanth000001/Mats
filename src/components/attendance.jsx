@@ -5,7 +5,8 @@ const Attendance = ({ subjects, classId }) => {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
+  const [numSubjects, setNumSubjects] = useState(1); // Default 1 subject
+  const [selectedSubjects, setSelectedSubjects] = useState(Array(1).fill("")); // Default 1 empty selection
 
   const handleAttendance = (studentId, status) => {
     setAttendance((prev) => ({
@@ -22,8 +23,8 @@ const Attendance = ({ subjects, classId }) => {
   };
 
   const sendAttendance = () => {
-    if (!selectedDate || !selectedSubject) {
-      alert("Please select a date and subject!");
+    if (!selectedDate || selectedSubjects.some((subj) => subj === "")) {
+      alert("Please select a date and complete all subject selections!");
       return;
     }
 
@@ -40,7 +41,7 @@ const Attendance = ({ subjects, classId }) => {
       body: JSON.stringify({
         classId: classId,
         date: new Date(selectedDate).toISOString(),
-        subject: selectedSubject, // Send the selected subject
+        subjects: selectedSubjects, // Send all selected subjects (duplicates allowed)
         students: formattedStudents,
       }),
     })
@@ -50,10 +51,10 @@ const Attendance = ({ subjects, classId }) => {
         }
         return response.json();
       })
-      .then((data) => {
+      .then(() => {
         window.location.reload();
       })
-      .catch((error) => console.error("Error submitting attendance:", error)); 
+      .catch((error) => console.error("Error submitting attendance:", error));
   };
 
   useEffect(() => {
@@ -74,23 +75,45 @@ const Attendance = ({ subjects, classId }) => {
           />
         </div>
 
-        {/* Subject Dropdown */}
+        {/* Number of Subjects Input */}
         <div className="w-48">
-          <label className="block text-gray-700">Select Subject:</label>
+          <label className="block text-gray-700">How many subjects?</label>
+          <input
+            type="number"
+            min="1"
+            max={subjects.length}
+            value={numSubjects}
+            onChange={(e) => {
+              setNumSubjects(Number(e.target.value));
+              setSelectedSubjects(Array(Number(e.target.value)).fill("")); // Reset subject selection
+            }}
+            className="border rounded p-2 w-full"
+          />
+        </div>
+      </div>
+
+      {/* Subject Selection Dropdowns */}
+      {Array.from({ length: numSubjects }, (_, index) => (
+        <div key={index} className="w-48 mt-4">
+          <label className="block text-gray-700">Select Subject {index + 1}:</label>
           <select
-            value={selectedSubject}
-            onChange={(e) => setSelectedSubject(e.target.value)}
+            value={selectedSubjects[index] || ""}
+            onChange={(e) => {
+              const newSubjects = [...selectedSubjects];
+              newSubjects[index] = e.target.value;
+              setSelectedSubjects(newSubjects);
+            }}
             className="border rounded p-2 w-full"
           >
             <option value="">-- Select Subject --</option>
-            {subjects.map((subject, index) => (
-              <option key={index} value={subject}>
+            {subjects.map((subject, idx) => (
+              <option key={idx} value={subject}>
                 {subject}
               </option>
             ))}
           </select>
         </div>
-      </div>
+      ))}
 
       {/* Student Attendance List */}
       <div className="mt-6">

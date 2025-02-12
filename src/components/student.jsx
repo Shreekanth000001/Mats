@@ -9,6 +9,8 @@ const Student = ({ studentId }) => {
   const attendedChartInstance = useRef(null);
   const absentChartInstance = useRef(null);
   const [subjectCounts, setSubjectCounts] = useState({});
+  const [subjectAbsentCounts, setSubjectAbsentCounts] = useState({});
+
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -32,27 +34,29 @@ const Student = ({ studentId }) => {
     const dateRange = Array.from({ length: 7 }, (_, i) => {
       const date = new Date(selectedDateObj);
       date.setDate(selectedDateObj.getDate() - i);
-      return date.toISOString().split("T")[0]; // YYYY-MM-DD
+      return date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
     }).reverse();
-
   
     const groupedAttendance = {};
     const groupedAbsence = {};
-    const subjectPresentCount = {}; 
+    const subjectPresentCount = {};
+    const subjectAbsentCount = {};
   
     attendances.forEach((curr) => {
       const date = new Date(curr.date).toISOString().split("T")[0];
-      const subject = curr.subject;
   
-      if (dateRange.includes(date)) {
-        if (curr.student.status === "present") {
-          groupedAttendance[date] = groupedAttendance[date] || [];
-          groupedAttendance[date].push(subject);
-          subjectPresentCount[subject] = (subjectPresentCount[subject] || 0) + 1;
-        } else if (curr.student.status === "absent") { // Explicitly check for "absent"
-          groupedAbsence[date] = groupedAbsence[date] || [];
-          groupedAbsence[date].push(subject);
-        }
+      if (dateRange.includes(date) && curr.subjects) {
+        curr.subjects.forEach((subject) => {
+          if (curr.student.status === "present") {
+            groupedAttendance[date] = groupedAttendance[date] || [];
+            groupedAttendance[date].push(subject);
+            subjectPresentCount[subject] = (subjectPresentCount[subject] || 0) + 1;
+          } else if (curr.student.status === "absent") {
+            groupedAbsence[date] = groupedAbsence[date] || [];
+            groupedAbsence[date].push(subject);
+            subjectAbsentCount[subject] = (subjectAbsentCount[subject] || 0) + 1;
+          }
+        });
       }
     });
   
@@ -139,7 +143,9 @@ const Student = ({ studentId }) => {
       });
     }
   
+    // ✅ Update both present & absent subject counts in state
     setSubjectCounts(subjectPresentCount);
+    setSubjectAbsentCounts(subjectAbsentCount);
   
     return () => {
       if (attendedChartInstance.current) attendedChartInstance.current.destroy();
@@ -147,7 +153,6 @@ const Student = ({ studentId }) => {
     };
   }, [attendances, selectedDate]);
   
-
   return (
     <div id="Class" className="w-full pl-1 md:pl-4 pr-1.5 pt-4 md:pt-9">
       <div className="text-2xl font-bold flex flex-col">
@@ -156,8 +161,8 @@ const Student = ({ studentId }) => {
       </div>
 
       {/* Attended Chart */}
-       {/* Date Selector */}
-       <div className="w-48 mb-4">
+      {/* Date Selector */}
+      <div className="w-48 mb-4">
         <label className="block text-gray-700">Select Date:</label>
         <input
           type="date"
@@ -167,23 +172,30 @@ const Student = ({ studentId }) => {
         />
       </div>
       <div className="w-full overflow-x-auto">
-      <div className="flex justify-center md:w-[90%] md:ml-4 w-[500px] bg-white rounded-md shadow-md">
-        <canvas ref={attendedChartRef} className="min-h-[230px]"></canvas>
-      </div></div>
+        <div className="flex justify-center md:w-[90%] md:ml-4 w-[500px] bg-white rounded-md shadow-md">
+          <canvas ref={attendedChartRef} className="min-h-[230px]"></canvas>
+        </div></div>
 
       {/* Absent Chart */}
       <div className="w-full overflow-x-auto mt-2">
-      <div className="flex justify-center md:w-[90%] md:ml-4 w-[500px] bg-white rounded-md shadow-md">
-        <canvas ref={absentChartRef} className="min-h-[230px]"></canvas>
-      </div></div>
-      <div className="text-xl font-bold flex flex-col">
-        <span>Subject-wise Present Count:</span>
-        {Object.entries(subjectCounts).map(([subject, count]) => (
-          <span key={subject}>
-            {subject}: {count}
-          </span>
-        ))}
-      </div>
+        <div className="flex justify-center md:w-[90%] md:ml-4 w-[500px] bg-white rounded-md shadow-md">
+          <canvas ref={absentChartRef} className="min-h-[230px]"></canvas>
+        </div></div>
+        <div className="text-xl font-bold flex flex-col">
+  <span>📊 Subject-wise Attendance:</span>
+  {Object.keys(subjectCounts).map((subject) => {
+    const P = subjectCounts[subject] || 0;
+    const A = subjectAbsentCounts[subject] || 0;
+    const percentage = P + A > 0 ? ((P / (P + A)) * 100).toFixed(2) : "0.00";
+
+    return (
+      <span key={subject}>
+        📘 {subject}: P: {P} | A: {A} | 🎯 {percentage}%
+      </span>
+    );
+  })}
+</div>
+
     </div>
   );
 };
